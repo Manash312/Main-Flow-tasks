@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product & Buyer Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .tabs {
+            display: flex;
+            background: #34495e;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 30px;
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tab.active {
+            background: #3498db;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #e74c3c;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .search-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 300px;
+            padding: 12px 20px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .search-btn, .clear-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .search-btn {
+            background: #3498db;
+            color: white;
+        }
+
+        .search-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .clear-btn {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .clear-btn:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        .filters {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.9rem;
+        }
+
+        .filter-select, .filter-input {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-select:focus, .filter-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .data-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+            transform: scale(1.01);
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin: 2px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .edit-btn {
+            background: #3498db;
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .view-btn {
+            background: #27ae60;
+            color: white;
+        }
+
+        .view-btn:hover {
+            background: #229954;
+            transform: translateY(-2px);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 300;
+        }
+
+        .close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .save-btn, .cancel-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn {
+            background: #27ae60;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background: #229954;
+            transform: translateY(-2px);
+        }
+
+        .cancel-btn {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .cancel-btn:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 500;
+            z-index: 2000;
+            opacity: 0;
+            transform: translateX(400px);
+            transition: all 0.3s ease;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: #27ae60;
+        }
+
+        .notification.error {
+            background: #e74c3c;
+        }
+
+        .highlight {
+            background-color: #fff3cd;
+            font-weight: bold;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .page-btn {
+            padding: 8px 12px;
+            border: 2px solid #3498db;
+            background: white;
+            color: #3498db;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .page-btn:hover, .page-btn.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .page-info {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .search-bar {
+                flex-direction: column;
+            }
+
+            .search-input {
+                min-width: 100%;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Product & Buyer Management System</h1>
+            <p>Manage your products and buyers with advanced search and editing capabilities</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('products')">Products</button>
+            <button class="tab" onclick="switchTab('buyers')">Buyers</button>
+        </div>
+
+        <div class="content">
+            <!-- Products Tab -->
+            <div id="products-tab" class="tab-content active">
+                <div class="search-section">
+                    <div class="search-bar">
+                        <input type="text" class="search-input" id="productSearch" placeholder="Search products by name, category, or ID..." oninput="searchProducts()">
+                        <button class="search-btn" onclick="searchProducts()">Search</button>
+                        <button class="clear-btn" onclick="clearProductSearch()">Clear</button>
+                    </div>
+                    
+                    <div class="filters">
+                        <div class="filter-group">
+                            <label>Category</label>
+                            <select class="filter-select" id="categoryFilter" onchange="searchProducts()">
+                                <option value="">All Categories</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Clothing">Clothing</option>
+                                <option value="Books">Books</option>
+                                <option value="Home">Home</option>
+                                <option value="Sports">Sports</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Price Range</label>
+                            <select class="filter-select" id="priceFilter" onchange="searchProducts()">
+                                <option value="">All Prices</option>
+                                <option value="0-50">$0 - $50</option>
+                                <option value="51-100">$51 - $100</option>
+                                <option value="101-500">$101 - $500</option>
+                                <option value="500+">$500+</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Status</label>
+                            <select class="filter-select" id="statusFilter" onchange="searchProducts()">
+                                <option value="">All Status</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                                <option value="Out of Stock">Out of Stock</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <!-- Products will be dynamically populated -->
+                        </tbody>
+                    </table>
+                    <div class="pagination" id="productsPagination">
+                        <!-- Pagination will be dynamically populated -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buyers Tab -->
+            <div id="buyers-tab" class="tab-content">
+                <div class="search-section">
+                    <div class="search-bar">
+                        <input type="text" class="search-input" id="buyerSearch" placeholder="Search buyers by name, email, or location..." oninput="searchBuyers()">
+                        <button class="search-btn" onclick="searchBuyers()">Search</button>
+                        <button class="clear-btn" onclick="clearBuyerSearch()">Clear</button>
+                    </div>
+                    
+                    <div class="filters">
+                        <div class="filter-group">
+                            <label>Location</label>
+                            <select class="filter-select" id="locationFilter" onchange="searchBuyers()">
+                                <option value="">All Locations</option>
+                                <option value="New York">New York</option>
+                                <option value="Los Angeles">Los Angeles</option>
+                                <option value="Chicago">Chicago</option>
+                                <option value="Houston">Houston</option>
+                                <option value="Phoenix">Phoenix</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Member Type</label>
+                            <select class="filter-select" id="memberFilter" onchange="searchBuyers()">
+                                <option value="">All Types</option>
+                                <option value="Premium">Premium</option>
+                                <option value="Standard">Standard</option>
+                                <option value="Basic">Basic</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Join Date</label>
+                            <select class="filter-select" id="joinDateFilter" onchange="searchBuyers()">
+                                <option value="">All Dates</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                                <option value="2022">2022</option>
+                                <option value="older">Before 2022</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Location</th>
+                                <th>Phone</th>
+                                <th>Member Type</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="buyersTableBody">
+                            <!-- Buyers will be dynamically populated -->
+                        </tbody>
+                    </table>
+                    <div class="pagination" id="buyersPagination">
+                        <!-- Pagination will be dynamically populated -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div id="editProductModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Product</h2>
+                <button class="close" onclick="closeModal('editProductModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editProductForm">
+                    <input type="hidden" id="editProductId">
+                    <div class="form-group">
+                        <label for="editProductName">Product Name *</label>
+                        <input type="text" id="editProductName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductCategory">Category *</label>
+                        <select id="editProductCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Books">Books</option>
+                            <option value="Home">Home</option>
+                            <option value="Sports">Sports</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductPrice">Price ($) *</label>
+                        <input type="number" id="editProductPrice" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductStock">Stock Quantity *</label>
+                        <input type="number" id="editProductStock" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductStatus">Status *</label>
+                        <select id="editProductStatus" required>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                            <option value="Out of Stock">Out of Stock</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductDescription">Description</label>
+                        <textarea id="editProductDescription" rows="3"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="cancel-btn" onclick="closeModal('editProductModal')">Cancel</button>
+                        <button type="submit" class="save-btn">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Buyer Modal -->
+    <div id="editBuyerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Buyer</h2>
+                <button class="close" onclick="closeModal('editBuyerModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editBuyerForm">
+                    <input type="hidden" id="editBuyerId">
+                    <div class="form-group">
+                        <label for="editBuyerName">Full Name *</label>
+                        <input type="text" id="editBuyerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editBuyerEmail">Email *</label>
+                        <input type="email" id="editBuyerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editBuyerPhone">Phone Number</label>
+                        <input type="tel" id="editBuyerPhone">
+                    </div>
+                    <div class="form-group">
+                        <label for="editBuyerLocation">Location *</label>
+                        <select id="editBuyerLocation" required>
+                            <option value="">Select Location</option>
+                            <option value="New York">New York</option>
+                            <option value="Los Angeles">Los Angeles</option>
+                            <option value="Chicago">Chicago</option>
+                            <option value="Houston">Houston</option>
+                            <option value="Phoenix">Phoenix</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editBuyerMemberType">Member Type *</label>
+                        <select id="editBuyerMemberType" required>
+                            <option value="Basic">Basic</option>
+                            <option value="Standard">Standard</option>
+                            <option value="Premium">Premium</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editBuyerAddress">Address</label>
+                        <textarea id="editBuyerAddress" rows="3"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="cancel-btn" onclick="closeModal('editBuyerModal')">Cancel</button>
+                        <button type="submit" class="save-btn">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        let products = [
+            {id: 1, name: "Wireless Headphones", category: "Electronics", price: 89.99, stock: 45, status: "Active", description: "High-quality wireless headphones with noise cancellation"},
+            {id: 2, name: "Cotton T-Shirt", category: "Clothing", price: 19.99, stock: 120, status: "Active", description: "100% cotton comfortable t-shirt"},
+            {id: 3, name: "JavaScript Guide", category: "Books", price: 29.99, stock: 0, status: "Out of Stock", description: "Comprehensive guide to JavaScript programming"},
+            {id: 4, name: "Coffee Maker", category: "Home", price: 79.99, stock: 8, status: "Active", description: "Automatic drip coffee maker"},
+            {id: 5, name: "Running Shoes", category: "Sports", price: 129.99, stock: 25, status: "Active", description: "Professional running shoes"},
+            {id: 6, name: "Smartphone", category: "Electronics", price: 699.99, stock: 15, status: "Active", description: "Latest model smartphone"},
+            {id: 7, name: "Denim Jeans", category: "Clothing", price: 59.99, stock: 0, status: "Inactive", description: "Classic blue denim jeans"},
+            {id: 8, name: "Cookbook", category: "Books", price: 24.99, stock: 30, status: "Active", description: "Collection of healthy recipes"}
+        ];
+
+        let buyers = [
+            {id: 1, name: "John Smith", email: "john.smith@email.com", location: "New York", phone: "+1-555-0123", memberType: "Premium", address: "123 Main St, NY", joinDate: "2024-01-15"},
+            {id: 2, name: "Sarah Johnson", email: "sarah.j@email.com", location: "Los Angeles", phone: "+1-555-0456", memberType: "Standard", address: "456 Oak Ave, LA", joinDate: "2023-11-22"},
+            {id: 3, name: "Mike Davis", email: "mike.davis@email.com", location: "Chicago", phone: "+1-555-0789", memberType: "Basic", address: "789 Pine St, Chicago", joinDate: "2024-02-08"},
+            {id: 4, name: "Emily Wilson", email: "emily.w@email.com", location: "Houston", phone: "+1-555-0321", memberType: "Premium", address: "321 Elm St, Houston", joinDate: "2023-09-12"},
+            {id: 5, name: "David Brown", email: "david.brown@email.com", location: "Phoenix", phone: "+1-555-0654", memberType: "Standard", address: "654 Cedar Rd, Phoenix", joinDate: "2024-03-20"},
+            {id: 6, name: "Lisa Anderson", email: "lisa.a@email.com", location: "New York", phone: "+1-555-0987", memberType: "Basic", address: "987 Maple Ave, NY", joinDate: "2022-12-05"},
+            {id: 7, name: "Tom Miller", email: "tom.miller@email.com", location: "Los Angeles", phone: "+1-555-0246", memberType: "Premium", address: "246 Birch St, LA", joinDate: "2023-07-18"},
+            {id: 8, name: "Amy Garcia", email: "amy.garcia@email.com", location: "Chicago", phone: "+1-555-0135", memberType: "Standard", address: "135 Spruce Dr, Chicago", joinDate: "2024-01-30"}
+        ];
+
+        let filteredProducts = [...products];
+        let filteredBuyers = [...buyers];
+        let currentProductPage = 1;
+        let currentBuyerPage = 1;
+        const itemsPerPage = 10;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            displayProducts();
+            displayBuyers();
+            setupFormHandlers();
+        });
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
+
+        // Search functionality for products
+        function searchProducts() {
+            const searchTerm = document.getElementById('productSearch').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const priceFilter = document.getElementById('priceFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            filteredProducts = products.filter(product => {
+                const matchesSearch = product.name.toLowerCase().includes(searchTerm) ||
+                                    product.category.toLowerCase().includes(searchTerm) ||
+                                    product.id.toString().includes(searchTerm);
+                
+                const matchesCategory = !categoryFilter || product.category === categoryFilter;
+                const matchesStatus = !statusFilter || product.status === statusFilter;
+                
+                let matchesPrice = true;
+                if (priceFilter) {
+                    if (priceFilter === '0-50') matchesPrice = product.price <= 50;
+                    else if (priceFilter === '51-100') matchesPrice = product.price > 50 && product.price <= 100;
+                    else if (priceFilter === '101-500') matchesPrice = product.price > 100 && product.price <= 500;
+                    else if (priceFilter === '500+') matchesPrice = product.price > 500;
+                }
+
+                return matchesSearch && matchesCategory && matchesPrice && matchesStatus;
+            });
+
+            currentProductPage = 1;
+            displayProducts();
+        }
+
+        // Search functionality for buyers
+        function searchBuyers() {
+            const searchTerm = document.getElementById('buyerSearch').value.toLowerCase();
+            const locationFilter = document.getElementById('locationFilter').value;
+            const memberFilter = document.getElementById('memberFilter').value;
+            const joinDateFilter = document.getElementById('joinDateFilter').value;
+
+            filteredBuyers = buyers.filter(buyer => {
+                const matchesSearch = buyer.name.toLowerCase().includes(searchTerm) ||
+                                    buyer.email.toLowerCase().includes(searchTerm) ||
+                                    buyer.location.toLowerCase().includes(searchTerm) ||
+                                    buyer.id.toString().includes(searchTerm);
+                
+                const matchesLocation = !locationFilter || buyer.location === locationFilter;
+                const matchesMember = !memberFilter || buyer.memberType === memberFilter;
+                
+                let matchesJoinDate = true;
+                if (joinDateFilter) {
+                    const joinYear = new Date(buyer.joinDate).getFullYear();
+                    if (joinDateFilter === '2024') matchesJoinDate = joinYear === 2024;
+                    else if (joinDateFilter === '2023') matchesJoinDate = joinYear === 2023;
+                    else if (joinDateFilter === '2022') matchesJoinDate = joinYear === 2022;
+                    else if (joinDateFilter === 'older') matchesJoinDate = joinYear < 2022;
+                }
+
+                return matchesSearch && matchesLocation && matchesMember && matchesJoinDate;
+            });
+
+            currentBuyerPage = 1;
+            displayBuyers();
+        }
+
+        // Clear search functions
+        function clearProductSearch() {
+            document.getElementById('productSearch').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('priceFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            filteredProducts = [...products];
+            currentProductPage = 1;
+            displayProducts();
+        }
+
+        function clearBuyerSearch() {
+            document.getElementById('buyerSearch').value = '';
+            document.getElementById('locationFilter').value = '';
+            document.getElementById('memberFilter').value = '';
+            document.getElementById('joinDateFilter').value = '';
+            filteredBuyers = [...buyers];
+            currentBuyerPage = 1;
+            displayBuyers();
+        }
+
+        // Display products with pagination
+        function displayProducts() {
+            const tableBody = document.getElementById('productsTableBody');
+            const startIndex = (currentProductPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageProducts = filteredProducts.slice(startIndex, endIndex);
+            const searchTerm = document.getElementById('productSearch').value.toLowerCase();
+
+            tableBody.innerHTML = '';
+
+            pageProducts.forEach(product => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${product.id}</td>
+                    <td>${highlightText(product.name, searchTerm)}</td>
+                    <td>${highlightText(product.category, searchTerm)}</td>
+                    <td>${product.price.toFixed(2)}</td>
+                    <td>${product.stock}</td>
+                    <td><span class="status-badge ${product.status.toLowerCase().replace(' ', '-')}">${product.status}</span></td>
+                    <td>
+                        <button class="action-btn view-btn" onclick="viewProduct(${product.id})" title="View Details">View</button>
+                        <button class="action-btn edit-btn" onclick="editProduct(${product.id})" title="Edit Product">Edit</button>
+                        <button class="action-btn delete-btn" onclick="deleteProduct(${product.id})" title="Delete Product">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            displayProductsPagination();
+        }
+
+        // Display buyers with pagination
+        function displayBuyers() {
+            const tableBody = document.getElementById('buyersTableBody');
+            const startIndex = (currentBuyerPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageBuyers = filteredBuyers.slice(startIndex, endIndex);
+            const searchTerm = document.getElementById('buyerSearch').value.toLowerCase();
+
+            tableBody.innerHTML = '';
+
+            pageBuyers.forEach(buyer => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${buyer.id}</td>
+                    <td>${highlightText(buyer.name, searchTerm)}</td>
+                    <td>${highlightText(buyer.email, searchTerm)}</td>
+                    <td>${highlightText(buyer.location, searchTerm)}</td>
+                    <td>${buyer.phone}</td>
+                    <td><span class="member-badge ${buyer.memberType.toLowerCase()}">${buyer.memberType}</span></td>
+                    <td>
+                        <button class="action-btn view-btn" onclick="viewBuyer(${buyer.id})" title="View Details">View</button>
+                        <button class="action-btn edit-btn" onclick="editBuyer(${buyer.id})" title="Edit Buyer">Edit</button>
+                        <button class="action-btn delete-btn" onclick="deleteBuyer(${buyer.id})" title="Delete Buyer">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            displayBuyersPagination();
+        }
+
+        // Highlight search terms
+        function highlightText(text, searchTerm) {
+            if (!searchTerm) return text;
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        // Pagination for products
+        function displayProductsPagination() {
+            const pagination = document.getElementById('productsPagination');
+            const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+            const maxVisiblePages = 5;
+            
+            pagination.innerHTML = '';
+
+            if (totalPages <= 1) return;
+
+            // Previous button
+            if (currentProductPage > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-btn';
+                prevBtn.textContent = '← Previous';
+                prevBtn.onclick = () => {
+                    currentProductPage--;
+                    displayProducts();
+                };
+                pagination.appendChild(prevBtn);
+            }
+
+            // Page numbers
+            let startPage = Math.max(1, currentProductPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage < maxVisiblePages - 1) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = 'page-btn' + (i === currentProductPage ? ' active' : '');
+                pageBtn.textContent = i;
+                pageBtn.onclick = () => {
+                    currentProductPage = i;
+                    displayProducts();
+                };
+                pagination.appendChild(pageBtn);
+            }
+
+            // Next button
+            if (currentProductPage < totalPages) {
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-btn';
+                nextBtn.textContent = 'Next →';
+                nextBtn.onclick = () => {
+                    currentProductPage++;
+                    displayProducts();
+                };
+                pagination.appendChild(nextBtn);
+            }
+
+            // Page info
+            const pageInfo = document.createElement('div');
+            pageInfo.className = 'page-info';
+            pageInfo.textContent = `Showing ${(currentProductPage - 1) * itemsPerPage + 1}-${Math.min(currentProductPage * itemsPerPage, filteredProducts.length)} of ${filteredProducts.length} products`;
+            pagination.appendChild(pageInfo);
+        }
+
+        // Pagination for buyers
+        function displayBuyersPagination() {
+            const pagination = document.getElementById('buyersPagination');
+            const totalPages = Math.ceil(filteredBuyers.length / itemsPerPage);
+            const maxVisiblePages = 5;
+            
+            pagination.innerHTML = '';
+
+            if (totalPages <= 1) return;
+
+            // Previous button
+            if (currentBuyerPage > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-btn';
+                prevBtn.textContent = '← Previous';
+                prevBtn.onclick = () => {
+                    currentBuyerPage--;
+                    displayBuyers();
+                };
+                pagination.appendChild(prevBtn);
+            }
+
+            // Page numbers
+            let startPage = Math.max(1, currentBuyerPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage < maxVisiblePages - 1) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = 'page-btn' + (i === currentBuyerPage ? ' active' : '');
+                pageBtn.textContent = i;
+                pageBtn.onclick = () => {
+                    currentBuyerPage = i;
+                    displayBuyers();
+                };
+                pagination.appendChild(pageBtn);
+            }
+
+            // Next button
+            if (currentBuyerPage < totalPages) {
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-btn';
+                nextBtn.textContent = 'Next →';
+                nextBtn.onclick = () => {
+                    currentBuyerPage++;
+                    displayBuyers();
+                };
+                pagination.appendChild(nextBtn);
+            }
+
+            // Page info
+            const pageInfo = document.createElement('div');
+            pageInfo.className = 'page-info';
+            pageInfo.textContent = `Showing ${(currentBuyerPage - 1) * itemsPerPage + 1}-${Math.min(currentBuyerPage * itemsPerPage, filteredBuyers.length)} of ${filteredBuyers.length} buyers`;
+            pagination.appendChild(pageInfo);
+        }
+
+        // Product actions
+        function viewProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (product) {
+                alert(`Product Details:\n\nName: ${product.name}\nCategory: ${product.category}\nPrice: ${product.price}\nStock: ${product.stock}\nStatus: ${product.status}\nDescription: ${product.description || 'N/A'}`);
+            }
+        }
+
+        function editProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (product) {
+                document.getElementById('editProductId').value = product.id;
+                document.getElementById('editProductName').value = product.name;
+                document.getElementById('editProductCategory').value = product.category;
+                document.getElementById('editProductPrice').value = product.price;
+                document.getElementById('editProductStock').value = product.stock;
+                document.getElementById('editProductStatus').value = product.status;
+                document.getElementById('editProductDescription').value = product.description || '';
+                
+                document.getElementById('editProductModal').style.display = 'block';
+            }
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                const index = products.findIndex(p => p.id === id);
+                if (index !== -1) {
+                    products.splice(index, 1);
+                    searchProducts(); // Refresh the display
+                    showNotification('Product deleted successfully!', 'success');
+                }
+            }
+        }
+
+        // Buyer actions
+        function viewBuyer(id) {
+            const buyer = buyers.find(b => b.id === id);
+            if (buyer) {
+                alert(`Buyer Details:\n\nName: ${buyer.name}\nEmail: ${buyer.email}\nPhone: ${buyer.phone}\nLocation: ${buyer.location}\nMember Type: ${buyer.memberType}\nJoin Date: ${buyer.joinDate}\nAddress: ${buyer.address || 'N/A'}`);
+            }
+        }
+
+        function editBuyer(id) {
+            const buyer = buyers.find(b => b.id === id);
+            if (buyer) {
+                document.getElementById('editBuyerId').value = buyer.id;
+                document.getElementById('editBuyerName').value = buyer.name;
+                document.getElementById('editBuyerEmail').value = buyer.email;
+                document.getElementById('editBuyerPhone').value = buyer.phone;
+                document.getElementById('editBuyerLocation').value = buyer.location;
+                document.getElementById('editBuyerMemberType').value = buyer.memberType;
+                document.getElementById('editBuyerAddress').value = buyer.address || '';
+                
+                document.getElementById('editBuyerModal').style.display = 'block';
+            }
+        }
+
+        function deleteBuyer(id) {
+            if (confirm('Are you sure you want to delete this buyer?')) {
+                const index = buyers.findIndex(b => b.id === id);
+                if (index !== -1) {
+                    buyers.splice(index, 1);
+                    searchBuyers(); // Refresh the display
+                    showNotification('Buyer deleted successfully!', 'success');
+                }
+            }
+        }
+
+        // Modal functions
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Form handlers
+        function setupFormHandlers() {
+            document.getElementById('editProductForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const id = parseInt(document.getElementById('editProductId').value);
+                const name = document.getElementById('editProductName').value;
+                const category = document.getElementById('editProductCategory').value;
+                const price = parseFloat(document.getElementById('editProductPrice').value);
+                const stock = parseInt(document.getElementById('editProductStock').value);
+                const status = document.getElementById('editProductStatus').value;
+                const description = document.getElementById('editProductDescription').value;
+
+                // Validation
+                if (!name || !category || !price || stock < 0 || !status) {
+                    showNotification('Please fill in all required fields correctly!', 'error');
+                    return;
+                }
+
+                // Update product
+                const productIndex = products.findIndex(p => p.id === id);
+                if (productIndex !== -1) {
+                    products[productIndex] = {
+                        ...products[productIndex],
+                        name,
+                        category,
+                        price,
+                        stock,
+                        status,
+                        description
+                    };
+                    
+                    closeModal('editProductModal');
+                    searchProducts(); // Refresh the display
+                    showNotification('Product updated successfully!', 'success');
+                }
+            });
+
+            document.getElementById('editBuyerForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const id = parseInt(document.getElementById('editBuyerId').value);
+                const name = document.getElementById('editBuyerName').value;
+                const email = document.getElementById('editBuyerEmail').value;
+                const phone = document.getElementById('editBuyerPhone').value;
+                const location = document.getElementById('editBuyerLocation').value;
+                const memberType = document.getElementById('editBuyerMemberType').value;
+                const address = document.getElementById('editBuyerAddress').value;
+
+                // Validation
+                if (!name || !email || !location || !memberType) {
+                    showNotification('Please fill in all required fields!', 'error');
+                    return;
+                }
+
+                // Email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showNotification('Please enter a valid email address!', 'error');
+                    return;
+                }
+
+                // Update buyer
+                const buyerIndex = buyers.findIndex(b => b.id === id);
+                if (buyerIndex !== -1) {
+                    buyers[buyerIndex] = {
+                        ...buyers[buyerIndex],
+                        name,
+                        email,
+                        phone,
+                        location,
+                        memberType,
+                        address
+                    };
+                    
+                    closeModal('editBuyerModal');
+                    searchBuyers(); // Refresh the display
+                    showNotification('Buyer updated successfully!', 'success');
+                }
+            });
+        }
+
+        // Notification system
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        };
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.style.display = 'none';
+                });
+            }
+        });
+    </script>
+
+    <style>
+        .status-badge, .member-badge {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-badge.out-of-stock {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .member-badge.premium {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #8b4513;
+        }
+
+        .member-badge.standard {
+            background: #e1f5fe;
+            color: #0277bd;
+        }
+
+        .member-badge.basic {
+            background: #f3e5f5;
+            color: #6a1b9a;
+        }
+    </style>
+</body>
+</html>
